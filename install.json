@@ -1,0 +1,102 @@
+{
+  "resources": {
+    "head": [
+      {
+        "type": "script",
+        "src": "./build/app.js"
+      }
+    ]
+  },
+  "preview": {
+    "handlers": [
+      {
+        "options": ["*"],
+        "execute": "INSTALL_SCOPE.setOptions(INSTALL_OPTIONS)"
+      }
+    ]
+  },
+  "options": {
+    "properties": {
+      "style": {
+        "order": 0,
+        "title": "How should the Pinterest button appear?",
+        "type": "string",
+        "default": "small",
+        "enum": [
+          "small",
+          "tall",
+          "round"
+        ],
+        "enumNames": {
+          "small": "Small",
+          "tall": "Large",
+          "round": "Round"
+        }
+      },
+
+      "countPosition": {
+        "order": 1,
+        "title": "Share Count Position",
+        "type": "string",
+        "default": "none",
+        "enum": [
+          "none",
+          "above",
+          "beside"
+        ],
+        "enumNames": {
+          "none": "None",
+          "above": "Above",
+          "beside": "Beside"
+        }
+      },
+
+      "appearOnHover": {
+        "order": 2,
+        "title": "Show the Pinterest button only when the user hovers over the image.",
+        "type": "boolean",
+        "default": false
+      },
+
+      "showAdvanced": {
+        "order": 3,
+        "title": "Show Advanced Options",
+        "type": "boolean",
+        "default": false
+      },
+
+      "advanced": {
+        "order": 11,
+        "showIf": "showAdvanced",
+        "title": "Advanced Options",
+        "type": "object",
+        "properties": {
+          "region": {
+            "order": 0,
+            "title": "Region",
+            "description": "What region of the page should Pinterest buttons be limited to?",
+            "type": "string",
+            "format": "selector",
+            "default": "body"
+          },
+
+          "minWidth": {
+            "order": 1,
+            "title": "Minimum Width",
+            "type": "number",
+            "default": 100,
+            "minimum": 0
+          },
+
+          "minHeight": {
+            "order": 2,
+            "title": "Minimum Height",
+            "type": "number",
+            "default": 100,
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}
