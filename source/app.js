@@ -87,7 +87,7 @@
         if (image.height <= 100) return false
         return true
       })
-      .filter(prepImage)
+      .forEach(prepImage)
   }
 
   function updateElements () {
