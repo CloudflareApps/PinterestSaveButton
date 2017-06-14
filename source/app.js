@@ -3,12 +3,14 @@
 
   if (!window.addEventListener) return // Check for IE9+
 
-  let options = INSTALL_OPTIONS
   const APP_ATTRIBUTE = 'data-cf-pin'
+  const VENDOR_METHOD = 'cfPinBuild'
   const IS_PREVIEW = INSTALL_ID === 'preview'
+  let options = INSTALL_OPTIONS
+  let buttonContainer
   let observer
-
   let url
+
   if (IS_PREVIEW) {
     const {host, path, scheme} = INSTALL.proxy.originalURL.parsed
 
@@ -17,42 +19,44 @@
     url = window.location
   }
 
-  function revertImages () {
-    const images = Array.prototype.slice.call(document.querySelectorAll(`[${APP_ATTRIBUTE}="parsed"`))
+  function insertButton () {
+    buttonContainer = INSTALL.createElement(options.location, buttonContainer)
+    buttonContainer.setAttribute('app', 'pinterest-save-button')
 
-    images.forEach(image => {
-      const originalParent = image.parentElement.parentElement
+    if (!buttonContainer.parentElement) return
 
-      originalParent.replaceChild(image, image.parentElement)
-      image.removeAttribute(APP_ATTRIBUTE)
-    })
-  }
+    const button = document.createElement('a')
 
-  function insertLink (image) {
-    let wrapper = document.createElement('a')
+    button.innerHTML = `
+      <img src="https://assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" />
+    `
 
-    wrapper.href = 'https://www.pinterest.com/pin/create/button/'
-    // wrapper.setAttribute('data-pin-do', 'buttonBookmark')
-    wrapper.setAttribute('data-pin-do', 'buttonPin')
-    wrapper.setAttribute('data-pin-url', url)
+    button.href = 'https://www.pinterest.com/pin/create/button/'
+    button.setAttribute('data-pin-do', 'buttonBookmark')
+    button.setAttribute('data-pin-url', url)
 
-    if (options.appearOnHover) {
-      wrapper.setAttribute('data-pin-hover', '')
-    }
-
-    switch (options.style) {
+    switch (options.shape) {
       case 'round':
-        wrapper.setAttribute('data-pin-shape', 'round')
+        button.setAttribute('data-pin-shape', 'round')
         break
       case 'tall':
-        wrapper.setAttribute('data-pin-tall', 'true')
+        button.setAttribute('data-pin-tall', 'true')
         break
     }
 
-    if (options.countPosition !== 'none') {
-      wrapper.setAttribute('data-pin-count', options.countPosition)
+    if (options.shape !== 'round' && options.countPosition !== 'none') {
+      button.setAttribute('data-pin-count', options.countPosition)
     }
 
+    buttonContainer.appendChild(button)
+
+    // The initial button insertion occurs before the vendor method is ready.
+    if (window[VENDOR_METHOD]) {
+      window[VENDOR_METHOD].call()
+    }
+  }
+
+  function prepImage (image) {
     let description = document.title
 
     if (image.parentElement.nodeName === 'FIGURE') {
@@ -68,39 +72,37 @@
       if (meta && meta.content) description = meta.content
     }
 
-    wrapper.setAttribute('data-pin-description', description)
-
-    console.log(wrapper)
-    // if (!wrapper.contains(image)) {
-    image.parentElement.replaceChild(wrapper, image)
-    wrapper.appendChild(image)
-    // }
-
+    image.setAttribute('data-pin-description', description)
     image.setAttribute(APP_ATTRIBUTE, 'parsed')
   }
 
   function parseImages () {
-    const container = document.querySelector(options.advanced.region)
-    if (!container) return
-
-    const images = Array.prototype.slice.call(container.querySelectorAll('img'))
+    const images = Array.prototype.slice.call(document.body.querySelectorAll('img'))
 
     images
       .filter(image => {
-        if (image.parentElement.tagName === 'A') return false
         if (image.getAttribute(APP_ATTRIBUTE) === 'parsed') return false
         if (image.getAttribute('role') === 'presentation') return false
-        if (image.width <= options.advanced.minWidth) return false
-        if (image.height <= options.advanced.minHeight) return false
+        if (image.width <= 100) return false
+        if (image.height <= 100) return false
         return true
       })
-      .filter(insertLink)
+      .filter(prepImage)
   }
 
-  function initalize () {
-    // revertImages()
+  function updateElements () {
+    if (buttonContainer && buttonContainer.parentElement) {
+      buttonContainer.parentElement.removeChild(buttonContainer)
+    }
 
-    if (observer) observer.disconnect()
+    if (observer) {
+      observer.disconnect()
+    }
+
+    if (options.type === 'once') {
+      insertButton()
+      return
+    }
 
     // Images loaded via HTML.
     parseImages()
@@ -112,7 +114,13 @@
   function bootstrap () {
     const pinterestVendorScript = document.createElement('script')
     pinterestVendorScript.src = 'https://assets.pinterest.com/js/pinit.js'
-    pinterestVendorScript.addEventListener('load', initalize)
+    pinterestVendorScript.setAttribute('data-pin-build', VENDOR_METHOD)
+
+    if (options.type === 'hover') {
+      pinterestVendorScript.setAttribute('data-pin-hover', 'true')
+    }
+
+    pinterestVendorScript.addEventListener('load', updateElements)
     pinterestVendorScript.addEventListener('error', () => {
       console.warn('Could not load Pinterest vendor script')
     })
@@ -132,7 +140,7 @@
     setOptions (nextOptions) {
       options = nextOptions
 
-      initalize()
+      updateElements()
     }
   }
 }())

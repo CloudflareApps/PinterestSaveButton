@@ -2,6 +2,10 @@
   "resources": {
     "head": [
       {
+        "type": "style",
+        "src": "./build/app.css"
+      },
+      {
         "type": "script",
         "src": "./build/app.js"
       }
@@ -10,6 +14,10 @@
   "preview": {
     "handlers": [
       {
+        "options": ["type"],
+        "reload": true
+      },
+      {
         "options": ["*"],
         "execute": "INSTALL_SCOPE.setOptions(INSTALL_OPTIONS)"
       }
@@ -17,16 +25,51 @@
   },
   "options": {
     "properties": {
-      "style": {
+      "type": {
         "order": 0,
-        "title": "How should the Pinterest button appear?",
+        "title": "Where should the Pinterest button appear?",
         "type": "string",
+        "default": "hover",
+        "format": "radios",
+        "enum": [
+          "hover",
+          "once"
+        ],
+        "enumNames": {
+          "hover": "When the user hovers over any image.",
+          "once": "As a single button on the page."
+        }
+      },
+
+      "location": {
+        "order": 1,
+        "showIf": {
+          "type": "once"
+        },
+        "title": "Location",
+        "description": "Where should the button appear?",
+        "type": "object",
+        "format": "element",
+        "default": {
+          "selector": "body",
+          "method": "prepend"
+        }
+      },
+
+      "shape": {
+        "order": 2,
+        "showIf": {
+          "type": "once"
+        },
+        "title": "Button Shape",
         "default": "small",
+        "format": "radios",
         "enum": [
           "small",
           "tall",
           "round"
         ],
+        "type": "string",
         "enumNames": {
           "small": "Small",
           "tall": "Large",
@@ -35,9 +78,17 @@
       },
 
       "countPosition": {
-        "order": 1,
+        "showIf": {
+          "type": "once",
+          "shape": {
+            "op": "!=",
+            "value": "round"
+          }
+        },
+        "order": 3,
         "title": "Share Count Position",
         "type": "string",
+        "format": "radios",
         "default": "none",
         "enum": [
           "none",
@@ -48,53 +99,6 @@
           "none": "None",
           "above": "Above",
           "beside": "Beside"
-        }
-      },
-
-      "appearOnHover": {
-        "order": 2,
-        "title": "Show the Pinterest button only when the user hovers over the image.",
-        "type": "boolean",
-        "default": false
-      },
-
-      "showAdvanced": {
-        "order": 3,
-        "title": "Show Advanced Options",
-        "type": "boolean",
-        "default": false
-      },
-
-      "advanced": {
-        "order": 11,
-        "showIf": "showAdvanced",
-        "title": "Advanced Options",
-        "type": "object",
-        "properties": {
-          "region": {
-            "order": 0,
-            "title": "Region",
-            "description": "What region of the page should Pinterest buttons be limited to?",
-            "type": "string",
-            "format": "selector",
-            "default": "body"
-          },
-
-          "minWidth": {
-            "order": 1,
-            "title": "Minimum Width",
-            "type": "number",
-            "default": 100,
-            "minimum": 0
-          },
-
-          "minHeight": {
-            "order": 2,
-            "title": "Minimum Height",
-            "type": "number",
-            "default": 100,
-            "minimum": 0
-          }
         }
       }
     }
