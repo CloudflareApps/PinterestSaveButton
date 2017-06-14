@@ -1,14 +1,8 @@
-# Example Webpack App
+# Pinterest Save Buttons
 
-This is our example app with the latest JavaScript and CSS features.
-
-Download this app and replace our code any time you want to build an Cloudflare app.
-
-**_Looking for a simpler setup? Check out our [vanilla example app](https://github.com/CloudflareApps/ExampleApp)!_**
+Add Pinterest save buttons to your site using Cloudflare Apps!
 
 ## Setup
-
-Fork and clone the repo or <a href="https://github.com/CloudflareApps/ExampleWebpackApp/releases/latest" >download the latest release</a>.
 
 Install the dependencies with `npm install`
 
@@ -47,7 +41,7 @@ An directory for icons, tile images, and screenshots.
 <a href="https://www.cloudflare.com/apps/example-webpack-app/install?source=button">
   <img
     src="https://install.eager.io/install-button.png"
-    alt="Install Example Webpack App with Cloudflare"
+    alt="Install Pinterest Save Buttons with Cloudflare"
     border="0"
     width="150">
 </a>
