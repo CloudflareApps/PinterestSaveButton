@@ -33,6 +33,7 @@
 
     button.href = 'https://www.pinterest.com/pin/create/button/'
     button.setAttribute('data-pin-do', 'buttonBookmark')
+    button.setAttribute('data-pin-save', 'true')
     button.setAttribute('data-pin-url', url)
 
     switch (options.shape) {
@@ -118,6 +119,7 @@
 
     if (options.type === 'hover') {
       pinterestVendorScript.setAttribute('data-pin-hover', 'true')
+      pinterestVendorScript.setAttribute('data-pin-save', 'true')
     }
 
     pinterestVendorScript.addEventListener('load', updateElements)
