@@ -1,5 +1,6 @@
 cloudflare-app[app="pinterest-save-button"] {
   display: block;
+  margin: 1em 0;
   position: relative;
   z-index: 1;
 }
