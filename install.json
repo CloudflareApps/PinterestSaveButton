@@ -18,7 +18,7 @@
         "reload": true
       },
       {
-        "options": ["*"],
+        "options": ["location", "shape", "countPosition"],
         "execute": "INSTALL_SCOPE.setOptions(INSTALL_OPTIONS)"
       }
     ]
